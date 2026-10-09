@@ -10,7 +10,8 @@
   "unlock_smoke",
   "unlock_wheels",
   "unlock_anims",
-  "unlock_houses"
+  "unlock_houses",
+  "set_name"
  ],
  "site_open": true,
  "auto_off_at": 0,
