@@ -2589,6 +2589,39 @@ def activate_key(raw):
             'activated': bool(act), 'boundEmail': bound}
 
 
+def verify_key(raw):
+    """校验密钥，返回 (ok, info)。info: {kh, type, exp}"""
+    raw = _norm_key(raw)
+    if not raw:
+        return False, '请填写密钥'
+    if len(raw) not in (12, 18):
+        return False, '密钥应为 18 位'
+    try:
+        with _KEY_LOCK:
+            kh = None
+            item = None
+            for cand in _key_hash_alts(raw):
+                it = _KEYS['keys'].get(cand)
+                if it:
+                    kh = cand
+                    item = it
+                    break
+            if not item:
+                return False, '密钥不存在'
+            if item.get('disabled'):
+                return False, '密钥已被禁用'
+            now = int(time.time())
+            act = int(item.get('activated') or 0)
+            dur = KEY_DURATIONS.get(item.get('type') or 'forever', 0)
+            if act and dur and now > act + dur:
+                return False, '密钥已过期'
+            ktype = item.get('type') or 'forever'
+            expire = (act + dur) if (act and dur) else 0
+        return True, {'kh': kh, 'type': ktype, 'exp': expire}
+    except Exception as e:
+        return False, '校验异常: %s' % str(e)[:60]
+
+
 def bind_key_account(kh, email):
     """登录游戏账号成功时调用：首次绑定邮箱 + 开始计时。
     返回 (ok, message)"""
