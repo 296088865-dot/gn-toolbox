@@ -1,6 +1,5 @@
 {
  "features": [
-  "set_name",
   "set_money",
   "set_wins",
   "set_loses",
