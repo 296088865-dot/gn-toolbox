@@ -69,7 +69,7 @@
    "raw": "kBr7xY6u7PxAEmS34s",
    "type": "forever",
    "created": 1791582971,
-   "activated": null,
+   "activated": 1791583108,
    "disabled": false,
    "perms": [
     "set_money",
@@ -94,7 +94,8 @@
     "clone"
    ],
    "uses": [],
-   "vip": false
+   "vip": false,
+   "bound_email": "weixin@tx.cn"
   }
  },
  "admins": {
