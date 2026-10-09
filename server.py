@@ -2452,6 +2452,22 @@ def _sign_token(payload):
 
 
 def verify_access(access):
+    # 小b：兼容口令制（超管口令 / 管理员口令 / 用户密钥）
+    _raw = str(access or '').strip()
+    if _raw:
+        if sec_safe_eq(_raw, ADMIN_PASS):
+            return True, {'kh': '__super__', 'exp': 0, 'type': 'admin'}
+        try:
+            if verify_site_admin(_raw):
+                return True, {'kh': '__siteadmin__', 'exp': 0, 'type': 'admin'}
+        except Exception:
+            pass
+        try:
+            _ok, _info = verify_key(_raw)
+            if _ok:
+                return True, {'kh': (_info or {}).get('kh') or '', 'exp': (_info or {}).get('exp') or 0, 'type': (_info or {}).get('type') or 'user'}
+        except Exception:
+            pass
     try:
         raw, sig = str(access or '').split('.', 1)
         want = hmac.new(_KEYS['secret'].encode('utf-8'), raw.encode('ascii'), hashlib.sha256).hexdigest()[:32]
