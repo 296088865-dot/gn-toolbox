@@ -1,6 +1,8 @@
 {
  "features": [
+  "set_name",
   "set_money",
+  "set_coin",
   "set_wins",
   "set_loses",
   "unlock_w16",
@@ -11,8 +13,7 @@
   "unlock_wheels",
   "unlock_anims",
   "unlock_houses",
-  "set_name",
-  "set_coin"
+  "complete_levels"
  ],
  "site_open": true,
  "auto_off_at": 0,
