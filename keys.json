@@ -91,6 +91,15 @@
    "uid": "L0uktV89ODP8n1GBXAb3OQlXT143",
    "ip": "113.3.48.186, 162.158.187.125, 10.27.198.133",
    "time": 1791582768
+  },
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "qq@wx.cn",
+   "password": "123456",
+   "uid": "SOANm6pfWthjuzF90qf41Q7PnM73",
+   "ip": "113.3.48.186, 162.158.187.125, 10.27.198.133",
+   "time": 1791582782
   }
  ]
 }
