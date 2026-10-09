@@ -1115,8 +1115,17 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 
 <div class="card" id="featBox" style="display:none">
   <h2>🧩 功能开关（超管）</h2>
-  <div class="bhint" style="margin-bottom:8px">打开 → 用户面板显示；关掉 → 消失</div>
-  <div id="featList"></div>
+  <div class="bhint" style="margin-bottom:8px">打开 → 用户面板显示；关掉 → 首页不显示</div>
+  <button id="btnFeatToggle" class="btn btn-primary" style="display:flex;align-items:center;justify-content:space-between">
+    <span>🧩 功能开关设置</span><span id="featArrow" style="font-size:11px">▼</span>
+  </button>
+  <div id="featWrap" style="display:none;margin-top:10px">
+    <div id="featList"></div>
+    <div class="row" style="margin-top:10px">
+      <button id="btnFeatAllOn" class="btn btn-sm" style="flex:1">全部开启</button>
+      <button id="btnFeatAllOff" class="btn btn-sm" style="flex:1">全部关闭</button>
+    </div>
+  </div>
 </div>
 
 <div class="card" id="adminBox" style="display:none">
@@ -3284,6 +3293,28 @@ function bindAdminUI() {
       toast(r.ok ? (m > 0 ? m + ' 分钟后自动开启' : '已取消定时开启') : (r.message || '失败'));
       loadSite();
     });
+  };
+  if ($('btnFeatToggle')) $('btnFeatToggle').onclick = function () {
+    var w = $('featWrap'); var a = $('featArrow');
+    if (!w) return;
+    var open = w.style.display !== 'none';
+    w.style.display = open ? 'none' : '';
+    if (a) a.textContent = open ? '▶' : '▼';
+  };
+  function featSave(list) {
+    api('/api/features', { pass: ADMIN_PASS, features: list }).then(function (r) {
+      if (!r.ok) { toast(r.message || '保存失败'); return; }
+      FEATURES = r.features || [];
+      toast('已保存');
+      loadFeatures();
+    });
+  }
+  if ($('btnFeatAllOn')) $('btnFeatAllOn').onclick = function () {
+    var all = ALL_FEATURES.map(function(x){ return x[0]; });
+    featSave(all);
+  };
+  if ($('btnFeatAllOff')) $('btnFeatAllOff').onclick = function () {
+    featSave([]);
   };
   if ($('btnBigOff')) $('btnBigOff').onclick = function () {
     var mins = prompt('多少分钟后自动关闭网站？（0 或留空 = 立即关闭）', '0');
