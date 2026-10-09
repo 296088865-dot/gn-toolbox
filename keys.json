@@ -105,6 +105,37 @@
    ],
    "vip": false,
    "bound_email": "weixin@tx.cn"
+  },
+  "993dc35d11ec7ec7": {
+   "raw": "hnP8xsvKrhfmYpMWms",
+   "type": "forever",
+   "created": 1791583222,
+   "activated": null,
+   "disabled": false,
+   "perms": [
+    "set_money",
+    "set_coin",
+    "set_id",
+    "set_name",
+    "set_wins",
+    "set_loses",
+    "unlock_w16",
+    "unlock_horns",
+    "unlock_fuel",
+    "unlock_damage",
+    "unlock_smoke",
+    "unlock_cars",
+    "unlock_wheels",
+    "unlock_anims",
+    "unlock_houses",
+    "complete_levels",
+    "set_rank",
+    "fix_account",
+    "unlock_all",
+    "clone"
+   ],
+   "uses": [],
+   "vip": false
   }
  },
  "admins": {
