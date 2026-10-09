@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0a0612">
-<title>闲鱼追光游戏工具箱</title>
+<title>CPM 工具箱</title>
 <style>
 :root {
   --bg: #0a0612;
@@ -1001,31 +1001,13 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 
 <!-- ================= 页1：入口 ================= -->
 <section id="pageKey" class="page">
-  <div class="hero">
-    <h1 class="glow-title" data-text="闲鱼追光游戏工具箱">闲鱼追光游戏工具箱</h1>
-    <p>CAR PARKING MULTIPLAYER</p>
-  </div>
   <div class="card">
-    <label style="text-align:center">访问密钥</label>
     <input id="inKey" class="key-input" placeholder="请输入密钥" maxlength="24" autocapitalize="off" autocomplete="off" spellcheck="false">
     <button id="btnEnter" class="btn btn-primary" style="margin-top:14px">进 入</button>
-    <button id="btnGuest" class="btn btn-ghost" style="margin-top:10px">👀 访客模式</button>
     <div id="keyMsg" class="msg dim">输入有效密钥后开始使用</div>
   </div>
 
-  <div class="notice">
-    <div class="nt-title">⚠️ 特别提醒（务必先看）</div>
-    <div class="nt-body">
-      登录工具箱之前，<b>请务必先把游戏账号退出</b>，否则刷出来的物品<b>不会同步到游戏里</b>。
-    </div>
-    <div class="nt-steps">
-      <div><span class="st">1</span>打开游戏 → 左上角 <b>设置</b></div>
-      <div><span class="st">2</span>点击 <b>保存数据</b></div>
-      <div><span class="st">3</span>点击 <b>登出</b>（确认游戏已退出）</div>
-      <div><span class="st">4</span>回到本页面，输入密钥登录工具箱</div>
-    </div>
-    <div class="nt-foot">💗 感谢支持，祝你玩得开心～</div>
-  </div>
+  
 </section>
 
 <!-- ================= 页2：登录游戏账号 ================= -->
@@ -1036,7 +1018,7 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
   </div>
 
   <div class="hero" style="padding:26px 0 2px">
-    <h1 class="glow-title" style="font-size:24px">闲鱼追光游戏工具箱</h1>
+    <h1 class="glow-title" style="font-size:24px">CPM 工具箱</h1>
     <p>登录游戏账号以继续</p>
   </div>
 
@@ -1068,23 +1050,19 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 <!-- ================= 页3：主功能 ================= -->
 <section id="pageMain" class="page" style="display:none">
   <div class="topbar">
-    <div class="brand">👑 闲鱼追光游戏工具箱</div>
+    <div class="brand">👑 CPM 工具箱</div>
     <div id="keyBadge" class="badge">--</div>
   </div>
 
   <div class="card" id="adminJump" style="display:none;padding:10px 14px">
     <button id="btnOpenAdmin" class="btn" style="margin:0">🔐 密钥管理面板</button>
   </div>
-
-  <div class="sect"><span class="sect-ico">📊</span>账号数据<span class="sect-line"></span></div>
-  <div class="card" id="overviewCard" style="display:none">
+<div class="card" id="overviewCard" style="display:none">
     <h2>账号数据</h2>
     <div id="overview"></div>
     <button id="btnRefresh" class="btn btn-ghost">🔄 刷新数据</button>
   </div>
-
-  <div class="sect"><span class="sect-ico">💰</span>资产与资料<span class="sect-line"></span></div>
-  <div class="card" id="editCard" style="display:none">
+<div class="card" id="editCard" style="display:none">
     <h2>修改数据</h2>
     <label>钞票（上限 5000 万）</label>
     <div class="row"><input id="inMoney" class="input" type="number" inputmode="numeric" placeholder="50000000"><button id="btnMoney" class="btn" data-perm="set_money">改</button></div>
@@ -1098,35 +1076,21 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
     <div class="row"><input id="inWins" class="input" type="number" inputmode="numeric" placeholder="胜场"><input id="inLoses" class="input" type="number" inputmode="numeric" placeholder="败场"><button id="btnWL" class="btn" data-perm="set_wins">改</button></div>
   </div>
 
-  <div class="sect"><span class="sect-ico">🎨</span>外观工坊<span class="sect-line"></span></div>
-  
-
-  <div class="sect"><span class="sect-ico">👑</span>解锁特权<span class="sect-line"></span></div>
-  <div class="card" id="unlockCard" style="display:none">
+<div class="card" id="unlockCard" style="display:none">
     <h2>解锁功能</h2>
     <div class="grid2" id="unlockGrid"></div>
     <button id="btnRank" class="btn btn-primary" style="margin-top:10px" data-perm="set_rank">👑 皇冠等级（排行榜拉满）</button>
     <button id="btnFix" class="btn btn-ghost" data-perm="fix_account">🧹 修复账号数据</button>
   </div>
-
-  <div class="sect"><span class="sect-ico">⚡</span>高级操作<span class="sect-line"></span></div>
-  <div class="card" id="advCard" style="display:none">
+<div class="card" id="advCard" style="display:none">
     <h2>高级</h2>
     
     <button id="btnLogout" class="btn btn-ghost">🚪 安全登出</button>
   </div>
 
-  <div class="sect"><span class="sect-ico">🚗</span>车辆管理<span class="sect-line"></span></div>
-  
 
-  <div class="sect"><span class="sect-ico">🧬</span>账号克隆<span class="sect-line"></span></div>
-  
 
-  <div class="sect"><span class="sect-ico">🧬</span>克隆日志<span class="sect-line"></span></div>
-  <div class="logbox"><div id="clonelog">尚无克隆记录…</div></div>
-
-  <div class="sect"><span class="sect-ico">📜</span>运行日志<span class="sect-line"></span></div>
-  <div class="logbox"><div id="log">等待操作…</div></div>
+<div class="logbox"><div id="log">等待操作…</div></div>
   <div class="foot"><a id="lnkExit" href="javascript:;">退出</a></div>
 </section>
 
@@ -1246,20 +1210,7 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
   </div>
 
   <!-- ================= 访客访问日志（PATCH45） ================= -->
-  <div class="card">
-    <h2>👀 访客访问日志 <span id="visitTotal" class="dim" style="font-size:11px"></span></h2>
-    <div class="statrow">
-      <div class="statchip"><b id="vToday">0</b><span>今日访问</span></div>
-      <div class="statchip"><b id="vUniq">0</b><span>独立 IP</span></div>
-      <div class="statchip"><b id="vAll">0</b><span>累计访问</span></div>
-    </div>
-    <div class="row" style="margin-top:8px">
-      <button id="btnVisitReload" class="btn btn-ghost" style="font-size:12.5px;padding:9px">🔄 刷新日志</button>
-      <button id="btnVisitGeo" class="btn btn-ghost" style="font-size:12.5px;padding:9px">🌍 查归属地</button>
-      <button id="btnVisitClear" class="btn btn-ghost" style="font-size:12.5px;padding:9px">🗑 清空</button>
-    </div>
-    <div class="visitbox" id="visitList"><div class="msg dim">点「刷新日志」查看访客记录</div></div>
-  </div>
+  
 </section>
 
 </div>
@@ -1701,9 +1652,7 @@ $('btnEnter').onclick = doEnter;
   $('inKey').addEventListener('keydown', function (e) { if (e.key === 'Enter') doEnter(); });
 
   /* PATCH43：访客模式 —— 无需密钥，直接进主页，只能看不能操作 */
-  if ($('btnGuest')) $('btnGuest').onclick = function () {
-    IS_GUEST = true;
-    IS_ADMIN = false;
+  IS_ADMIN = false;
     PERMS = [];
     KEY_EXP = 0;
     SID = null;
@@ -3280,7 +3229,7 @@ function idleStop() {
   try { gradInitStyles(); } catch (e) {}
   try { langInit(); } catch (e) {}
   try { ntLoad(); } catch (e) {}
-  try { accBuild(); } catch (e) {}
+  /* 小b：不使用折叠面板 */
   try { if (window.CPM_APPLY_LANG) window.CPM_APPLY_LANG(); } catch (e) {}
 
   var stage = 'key';
@@ -3330,6 +3279,10 @@ var GEN_TYPE = 'forever';
 
 function enterAdmin() {
   show('pageAdmin');
+  /* 强制显示所有管理卡片（防 JS 异常导致空白） */
+  try {
+    ['superOnly','featBox','adminBox'].forEach(function(id){ var e=$(id); if(e) e.style.display=(ROLE==='super'?'':'none'); });
+  } catch(e) {}
   var isSuper = (ROLE === 'super');
   $('adminTitle').textContent = isSuper ? '🔐 超级管理面板' : '🔐 管理面板';
   $('superOnly').style.display = isSuper ? '' : 'none';
