@@ -1158,11 +1158,7 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
     <div id="genResult" class="genresult"></div>
   </div>
 
-  <div class="card">
-    <h2>密钥库 <span id="statTotal" class="dim" style="font-size:11px"></span></h2>
-    <button id="btnReload" class="btn btn-ghost" style="margin-top:0;margin-bottom:4px">🔄 刷新列表</button>
-    <div id="keyList" class="keylist"></div>
-  </div>
+  
 
   <!-- ================= 轮播公告设置（PATCH45） ================= -->
   <div class="card">
@@ -1310,7 +1306,25 @@ var UNLOCK_BTNS = [
   ['complete_levels', '🎮 全关卡通关']
 ];
 
-function $(id) { return document.getElementById(id); }
+function $(id) {
+  var e = document.getElementById(id);
+  if (e) return e;
+  /* 小b：元素不存在时返回安全空壳，避免 JS 崩溃 */
+  var ghost = {
+    style: {}, classList: { add: function(){}, remove: function(){}, contains: function(){ return false; } },
+    textContent: '', innerHTML: '', value: '', checked: false, disabled: false,
+    onclick: null, onchange: null, oninput: null,
+    appendChild: function(){}, removeChild: function(){}, insertBefore: function(){},
+    querySelector: function(){ return null; },
+    querySelectorAll: function(){ return []; },
+    setAttribute: function(){}, getAttribute: function(){ return null; },
+    addEventListener: function(){}, focus: function(){},
+    parentNode: null, firstChild: null, firstElementChild: null,
+  };
+  ghost.parentNode = ghost;
+  return ghost;
+}
+function _el(id){ var e=document.getElementById(id); return e; }
 
 function toast(msg) {
   var t = $('toast');
