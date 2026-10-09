@@ -1649,48 +1649,6 @@ function doAction(name, params, label) {
 $('btnEnter').onclick = doEnter;
   $('inKey').addEventListener('keydown', function (e) { if (e.key === 'Enter') doEnter(); });
 
-  /* PATCH43：访客模式 —— 无需密钥，直接进主页，只能看不能操作 */
-  IS_ADMIN = false;
-    PERMS = [];
-    KEY_EXP = 0;
-    SID = null;
-    ACCESS = null;
-    try { localStorage.removeItem('cpm_access'); } catch (e) {}
-    show('pageMain');
-    enterMain({ typeName: '👀 访客模式', exp: 0, perms: [], admin: false });
-    /* PATCH45：上报一条访客访问日志 */
-    try {
-      api('/api/visit', {
-        access: '',
-        screen: (window.screen ? (screen.width + 'x' + screen.height) : ''),
-        platform: navigator.platform || '',
-        from: 'guest'
-      });
-    } catch (e) {}
-    /* PATCH44：访客没有账号数据，renderOverview 不会跑，
-       必须手动把各功能卡片显示出来，否则展开折叠区是空的 */
-    try {
-      var _cards = ['overviewCard', 'editCard', 'gradCard', 'unlockCard', 'advCard', 'carCard', 'cloneCard'];
-      for (var _i = 0; _i < _cards.length; _i++) {
-        var _c = $(_cards[_i]);
-        if (_c) _c.style.display = '';
-      }
-      var _ov = $('overview');
-      if (_ov) {
-        _ov.innerHTML = '<div class="kv"><span>状态</span><b>👀 访客模式</b></div>' +
-                        '<div class="kv"><span>说明</span><b>只能查看，不能操作</b></div>' +
-                        '<div class="kv"><span>购买</span><b>如需购买请添加QQ</b></div>';
-      }
-      var _lc = $('loginCard');
-      if (_lc) _lc.style.display = 'none';
-    } catch (e) {}
-    log('👀 已进入访客模式：可查看全部功能，不能操作');
-    try {
-      var kb = $('keyBadge');
-      if (kb) { kb.textContent = '👀 访客模式'; kb.className = 'badge'; }
-    } catch (e) {}
-    toast('访客模式：可查看，不能操作');
-  };
 
 $('btnLogin').onclick = function () { doLogin(false); };
 $('password').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !REG_MODE) doLogin(false); });
