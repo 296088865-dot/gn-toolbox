@@ -70,16 +70,7 @@
     "unlock_all",
     "clone"
    ],
-   "uses": [
-    {
-     "email": "weixin@88.88",
-     "password": "aaa000",
-     "uid": "CmFTQOdgG3e9frP28wb8Cd8d7pH2",
-     "ip": "112.184.25.35, 104.22.66.251, 10.26.34.133",
-     "time": 1791556845,
-     "note": "绑定:✓"
-    }
-   ],
+   "uses": [],
    "vip": false,
    "bound_email": "weixin@88.88"
   }
