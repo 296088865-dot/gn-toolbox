@@ -221,6 +221,15 @@
    "uid": "OyA3Gbgc8fSQ6ZIOq30qDoNEehA3",
    "ip": "113.3.48.186, 172.69.33.45, 10.31.197.151",
    "time": 1791583391
+  },
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "weixin@tx.cn",
+   "password": "123456",
+   "uid": "OyA3Gbgc8fSQ6ZIOq30qDoNEehA3",
+   "ip": "113.3.48.186, 172.71.124.88, 10.27.198.133",
+   "time": 1791583487
   }
  ]
 }
