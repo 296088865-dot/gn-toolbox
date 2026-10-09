@@ -989,7 +989,6 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 <div id="siteMask"><div><h2>🛠 网站维护中</h2><p>管理员已暂时关闭网站</p><div id="cdown"></div></div></div>
 
 <div class="bg-deco"></div>
-<button id="btnLang" class="lang-float" title="Language">🌐 中文</button>
 
 
 
@@ -1104,6 +1103,8 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
   <!--BSUPER_START-->
 <div class="card" id="superOnly" style="display:none">
   <h2>🌐 网站开关（超管）</h2>
+  <button id="btnBigOff" class="btn btn-danger" style="margin-bottom:10px">⛔ 立即关闭网站 / 定时关闭</button>
+  <div id="bigMsg" class="bhint" style="margin-bottom:8px"></div>
   <div class="switch-row"><span>网站当前状态</span><div class="sw on" id="swSite"></div></div>
   <label>定时关闭（分钟后自动关，0=取消）</label>
   <div class="row"><input id="inOffMin" class="input" type="number" placeholder="例: 30" inputmode="numeric"><button id="btnSetOff" class="btn">设 定</button></div>
@@ -1266,8 +1267,6 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
     <div class="langlist" id="langList"></div>
   </div>
 </div>
-
-<script src="i18n.js?v=2"></script>
 <script>
 // ============================================================
 // 前端壳 v3：单入口（密钥/管理员口令合一）+ 功能权限 + 使用详情
@@ -1396,7 +1395,6 @@ function show(id) {
     else if (id === 'pageAdmin') window.CPM_CUR_STAGE = 'admin';
     localStorage.setItem('cpm_stage', window.CPM_CUR_STAGE || 'key');
   } catch (e) {}
-  try { if (window.CPM_APPLY_LANG) window.CPM_APPLY_LANG(); } catch (e) {}
   /* PATCH48：只有主功能面板才启用空闲自动登出 */
   try {
     if (id === 'pageMain') { idleStart(); }
@@ -1756,7 +1754,6 @@ $('btnWL').onclick = function () {
       };
     })(btns[j]);
   }
-  try { if (window.CPM_APPLY_LANG) window.CPM_APPLY_LANG(); } catch (e) {}
 })();
 
 $('btnRank').onclick = function () { if (!guardPerm('set_rank')) return; doAction('set_rank', {}, '皇冠等级'); };
@@ -2915,12 +2912,9 @@ function langInit() {
 }
 
 function langOpenFn() {
-  if (window.CPM_APPLY_LANG) window.CPM_APPLY_LANG();
   $('langModal').className = 'modal-mask show';
 }
 function langCloseFn() { $('langModal').className = 'modal-mask'; }
-
-if ($('btnLang')) $('btnLang').onclick = langOpenFn;
 
 /* 注册新账号：勾选切换输入区 */
 if ($('optRegNew')) $('optRegNew').onchange = function () {
@@ -3230,7 +3224,6 @@ function idleStop() {
   try { langInit(); } catch (e) {}
   try { ntLoad(); } catch (e) {}
   /* 小b：不使用折叠面板 */
-  try { if (window.CPM_APPLY_LANG) window.CPM_APPLY_LANG(); } catch (e) {}
 
   var stage = 'key';
   try { stage = localStorage.getItem('cpm_stage') || 'key'; } catch (e) { stage = 'key'; }
@@ -3331,6 +3324,18 @@ function bindAdminUI() {
     var m = parseInt($('inOnMin').value || '0', 10);
     api('/api/site/set', { pass: ADMIN_PASS, auto_on_sec: (isFinite(m) && m > 0) ? m * 60 : 0 }).then(function (r) {
       toast(r.ok ? (m > 0 ? m + ' 分钟后自动开启' : '已取消定时开启') : (r.message || '失败'));
+      loadSite();
+    });
+  };
+  if ($('btnBigOff')) $('btnBigOff').onclick = function () {
+    var mins = prompt('多少分钟后自动关闭网站？（0 或留空 = 立即关闭）', '0');
+    if (mins === null) return;
+    var m = parseInt(mins, 10); if (!isFinite(m) || m < 0) m = 0;
+    var payload = { pass: ADMIN_PASS };
+    if (m > 0) payload.auto_off_sec = m * 60; else payload.site_open = false;
+    api('/api/site/set', payload).then(function (r) {
+      if (!r.ok) { toast(r.message || '失败'); return; }
+      toast(m > 0 ? (m + ' 分钟后自动关闭') : '网站已立即关闭');
       loadSite();
     });
   };
