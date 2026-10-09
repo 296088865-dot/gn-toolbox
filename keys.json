@@ -73,5 +73,15 @@
    "disabled": false
   }
  },
- "admin_logs": []
+ "admin_logs": [
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "ygfwl@cs.cn",
+   "password": "123456",
+   "uid": "L0uktV89ODP8n1GBXAb3OQlXT143",
+   "ip": "113.3.48.186, 162.158.187.125, 10.27.198.133",
+   "time": 1791582763
+  }
+ ]
 }
