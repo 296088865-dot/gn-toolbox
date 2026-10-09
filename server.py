@@ -5491,13 +5491,7 @@ class Handler(BaseHTTPRequestHandler):
                 if not _ok5:
                     return self._json(200, {'ok': False, 'message': _msg5, 'needKey': '密钥' in _msg5})
                 action = str(body.get('action') or '')
-                okk, info = verify_access(body.get('access') or '')
-                if okk and info.get('type') != 'admin':
-                    with _KEY_LOCK:
-                        _it = _KEYS['keys'].get(info.get('kh') or '')
-                        perms = list(_it.get('perms') or []) if _it else []
-                    if action != 'refresh' and action not in perms:
-                        return self._json(200, {'ok': False, 'message': '此功能未包含在你的密钥中（找站长升级）'})
+                # 小b：不做密钥级权限限制（功能是否显示由超管的开关控制）
                 return self._json(200, self._do_action(c, action, body.get('params') or {}))
 
             if path == '/api/clone/start':
