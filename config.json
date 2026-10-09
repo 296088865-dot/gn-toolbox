@@ -11,7 +11,8 @@
   "unlock_wheels",
   "unlock_anims",
   "unlock_houses",
-  "set_name"
+  "set_name",
+  "set_coin"
  ],
  "site_open": true,
  "auto_off_at": 0,
