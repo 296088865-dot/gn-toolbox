@@ -29,16 +29,7 @@
     "unlock_all",
     "clone"
    ],
-   "uses": [
-    {
-     "email": "weixin@qq.com",
-     "password": "aaa000",
-     "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-     "ip": "112.184.25.35, 172.71.110.30, 10.25.16.5",
-     "time": 1791556585,
-     "note": "绑定:✓"
-    }
-   ],
+   "uses": [],
    "vip": false,
    "bound_email": "weixin@qq.com"
   },
@@ -70,16 +61,7 @@
     "unlock_all",
     "clone"
    ],
-   "uses": [
-    {
-     "email": "weixin@88.88",
-     "password": "aaa000",
-     "uid": "CmFTQOdgG3e9frP28wb8Cd8d7pH2",
-     "ip": "112.184.25.35, 172.71.110.30, 10.26.34.133",
-     "time": 1791557065,
-     "note": "绑定:✓"
-    }
-   ],
+   "uses": [],
    "vip": false,
    "bound_email": "weixin@88.88"
   }
@@ -91,87 +73,5 @@
    "disabled": false
   }
  },
- "admin_logs": [
-  {
-   "kind": "super",
-   "pass": "Ni2013",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 104.22.66.24, 10.26.34.133",
-   "time": 1791555948
-  },
-  {
-   "kind": "siteadmin",
-   "pass": "ADM-ScAeFp9pKS8b",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 141.101.84.195, 10.30.126.74",
-   "time": 1791556028
-  },
-  {
-   "kind": "siteadmin",
-   "pass": "ADM-ScAeFp9pKS8b",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 172.70.147.182, 10.25.16.5",
-   "time": 1791556101
-  },
-  {
-   "kind": "super",
-   "pass": "Ni2013",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 141.101.84.194, 10.30.126.74",
-   "time": 1791556283
-  },
-  {
-   "kind": "siteadmin",
-   "pass": "ADM-ScAeFp9pKS8b",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 141.101.84.194, 10.25.16.5",
-   "time": 1791556312
-  },
-  {
-   "kind": "siteadmin",
-   "pass": "ADM-ScAeFp9pKS8b",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 141.101.84.195, 10.26.34.133",
-   "time": 1791556544
-  },
-  {
-   "kind": "super",
-   "pass": "Ni2013",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 104.22.66.251, 10.26.34.133",
-   "time": 1791556651
-  },
-  {
-   "kind": "super",
-   "pass": "Ni2013",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 141.101.84.194, 10.26.34.133",
-   "time": 1791557153
-  },
-  {
-   "kind": "super",
-   "pass": "Ni2013",
-   "email": "weixin@qq.com",
-   "password": "aaa000",
-   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
-   "ip": "112.184.25.35, 104.22.66.251, 10.25.16.5",
-   "time": 1791559075
-  }
- ]
+ "admin_logs": []
 }
