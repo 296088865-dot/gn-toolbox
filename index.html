@@ -1738,7 +1738,7 @@ $('btnWL').onclick = function () {
   }
 })();
 
-if ($('btnRank')) if ($('btnRank')) $('btnRank').onclick = function () { if (!guardPerm('set_rank')) return; doAction('set_rank', {}, '皇冠等级'); };
+/* 皇冠等级已下线 */
 $('btnFix').onclick = function () { if (!guardPerm('fix_account')) return; doAction('fix_account', {}, '修复账号数据'); };
 if($('btnUnlockAll')) $('btnUnlockAll').onclick = function () {
   if (!guardPerm('unlock_all')) return;
