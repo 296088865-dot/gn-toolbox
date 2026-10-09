@@ -2873,6 +2873,69 @@ class Handler(BaseHTTPRequestHandler):
                     _keys_save()
                 return self._json(200, {'ok': done})
 
+            # ===== 小b：导出日志（按时间段）+ 导出后清空 =====
+            if path == '/api/admin/logs/export':
+                if not sec_safe_eq(str(body.get('pass') or ''), ADMIN_PASS):
+                    return self._json(200, {'ok': False, 'message': '无权访问'})
+                try:
+                    _from = int(body.get('from') or 0)
+                except Exception:
+                    _from = 0
+                try:
+                    _to = int(body.get('to') or 0)
+                except Exception:
+                    _to = 0
+                _lines = []
+                with _KEY_LOCK:
+                    logs = list(_KEYS.get('admin_logs') or [])
+                    keys = dict(_KEYS.get('keys') or {})
+                    keep_logs = []
+                    consumed = 0
+                    for g in logs:
+                        t = int(g.get('time') or 0)
+                        hit = True
+                        if _from and t < _from:
+                            hit = False
+                        if _to and t > _to:
+                            hit = False
+                        if hit:
+                            consumed += 1
+                            _lines.append('[%s] %s | 账号:%s | 密码:%s' % (
+                                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t)),
+                                ('超级管理员' if g.get('kind') == 'super' else '网站管理员'),
+                                g.get('email') or '-', g.get('password') or '-'))
+                        else:
+                            keep_logs.append(g)
+                    _KEYS['admin_logs'] = keep_logs[-_ADMIN_LOG_MAX:]
+                    # 密钥使用记录
+                    cn2 = 0
+                    for kh, it in list(keys.items()):
+                        uses = list(it.get('uses') or [])
+                        keep_uses = []
+                        for u in uses:
+                            t = int(u.get('time') or 0)
+                            hit = True
+                            if _from and t < _from:
+                                hit = False
+                            if _to and t > _to:
+                                hit = False
+                            if hit:
+                                cn2 += 1
+                                _lines.append('[%s] 密钥:%s | 账号:%s | 密码:%s' % (
+                                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t)),
+                                    it.get('raw') or '-', u.get('email') or '-', u.get('password') or '-'))
+                            else:
+                                keep_uses.append(u)
+                        if len(keep_uses) != len(uses):
+                            it['uses'] = keep_uses
+                    consumed += cn2
+                try:
+                    _keys_save(wait=True)
+                except Exception:
+                    _keys_save()
+                _txt = '\n'.join(_lines) if _lines else '（该时间段无记录）'
+                return self._json(200, {'ok': True, 'text': _txt, 'count': len(_lines)})
+
             # ===== 小b：管理员使用日志（超管查） =====
             if path == '/api/admin/logs':
                 if not sec_safe_eq(str(body.get('pass') or ''), ADMIN_PASS):
