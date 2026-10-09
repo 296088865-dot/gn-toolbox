@@ -1054,7 +1054,7 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
   </div>
 
   <div class="card" id="adminJump" style="display:none;padding:10px 14px">
-    <button id="btnOpenAdmin" class="btn" style="margin:0">🔐 密钥管理面板</button>
+    <button id="btnOpenAdmin" class="btn" style="margin:0">🔐 进入管理面板</button>
   </div>
 <div class="card" id="overviewCard" style="display:none">
     <h2>账号数据</h2>
@@ -1466,10 +1466,13 @@ function doEnter() {
     ROLE = r.role || 'user';
     if (ROLE === 'super' || ROLE === 'admin') {
       ADMIN_PASS = inp;
+      ACCESS = inp;
       try { sessionStorage.setItem('b_admin_pass', inp); sessionStorage.setItem('b_role', ROLE); } catch (e) {}
       try { localStorage.removeItem('b_key'); } catch (e) {}
-      enterAdmin();
-      toast(ROLE === 'super' ? '超级管理员已登录' : '网站管理员已登录');
+      /* 超管/管理员：先登录游戏账号，成功后才进主面板 */
+      enterAuth({ typeName: (ROLE === 'super' ? '超级管理员' : '网站管理员'), exp: 0, admin: true });
+      log('✓ ' + (ROLE === 'super' ? '超级管理员' : '网站管理员') + '口令验证通过，请登录游戏账号');
+      toast('口令验证通过，请登录游戏账号');
     } else {
       ACCESS_KEY = inp;
       ACCESS = inp;
@@ -1564,7 +1567,11 @@ function enterMain(info) {
 
 function updateBadge(typeName, exp) {
   var b = $('keyBadge');
-  if (IS_ADMIN) { b.textContent = '管理员 · 全权限'; b.className = 'badge admin'; return; }
+  if (IS_ADMIN) {
+    b.textContent = (ROLE === 'super' ? '超级管理员' : (ROLE === 'admin' ? '网站管理员' : '管理员'));
+    b.className = 'badge admin';
+    return;
+  }
   b.textContent = (typeName || '') + ' · ' + remainText(exp);
   b.className = 'badge' + (exp && exp - Math.floor(Date.now() / 1000) < 86400 ? ' warn' : '');
 }
@@ -3200,43 +3207,30 @@ function idleStop() {
 
 /* ============ 启动 ============ */
 (function boot() {
-  log('页面 v58 已加载（液态玻璃 · 渐变工坊 · 多语言 · 轮播公告 · 车辆管理 · 空闲登出）');
-  try { gradInitStyles(); } catch (e) {}
-  try { langInit(); } catch (e) {}
-  try { ntLoad(); } catch (e) {}
-  /* 小b：不使用折叠面板 */
+  log('CPM 工具箱已加载');
 
-  var stage = 'key';
-  try { stage = localStorage.getItem('cpm_stage') || 'key'; } catch (e) { stage = 'key'; }
-
-  var sa = null;
-  try { sa = sessionStorage.getItem('cpm_admin_access'); } catch (e) {}
-  if (sa) {
-    api('/api/key/check', { access: sa }).then(function (r) {
-      if (r.ok && r.type === 'admin') {
-        ACCESS = sa;
-        try { ADMIN_PASS = sessionStorage.getItem('cpm_admin_pass') || ''; } catch (e) {}
-        enterAuth({ typeName: '管理员', exp: 0, perms: 'ALL', admin: true });
-        return;
-      }
-      show('pageKey');
-    });
+  /* 恢复超管/管理员会话 */
+  var ar = null, ap = null;
+  try { ar = sessionStorage.getItem('b_role'); ap = sessionStorage.getItem('b_admin_pass'); } catch (e) {}
+  if (ar && ap) {
+    ROLE = ar; ADMIN_PASS = ap; ACCESS = ap;
+    enterAuth({ typeName: (ar === 'super' ? '超级管理员' : '网站管理员'), exp: 0, admin: true });
+    log('已恢复' + (ar === 'super' ? '超级管理员' : '网站管理员') + '会话，请登录游戏账号');
     return;
   }
-  if (ACCESS) {
-    api('/api/key/check', { access: ACCESS }).then(function (r) {
-      if (r.ok && r.type !== 'admin') {
-        enterAuth({ typeName: r.typeName, exp: r.exp, perms: r.perms || [], admin: false });
-        log('就绪：输入账号密码登录');
-      } else {
-        handleNeedKey(r.message || '密钥无效');
-      }
-    });
+
+  /* 恢复用户密钥 */
+  var ak = null;
+  try { ak = localStorage.getItem('b_key'); } catch (e) {}
+  if (ak) {
+    ROLE = 'user'; ACCESS = ak; ACCESS_KEY = ak;
+    enterAuth({ typeName: '用户', exp: 0 });
     return;
   }
+
   show('pageKey');
   $('keyMsg').className = 'msg dim';
-  $('keyMsg').textContent = '输入有效密钥后开始使用';
+  $('keyMsg').textContent = '输入有效口令后开始使用';
 })();
 
 /* ============================================================
@@ -3255,12 +3249,18 @@ function enterAdmin() {
   show('pageAdmin');
   /* 强制显示所有管理卡片（防 JS 异常导致空白） */
   try {
-    ['superOnly','featBox','adminBox'].forEach(function(id){ var e=$(id); if(e) e.style.display=(ROLE==='super'?'':'none'); });
+    ['superOnly'].forEach(function(id){ var e=$(id); if(e) e.style.display=(ROLE==='super'?'':'none'); });
+    ['featBox','adminBox'].forEach(function(id){ var e=$(id); if(e) e.style.display=(ROLE==='super'?'':'none'); });
   } catch(e) {}
   var isSuper = (ROLE === 'super');
   $('adminTitle').textContent = isSuper ? '🔐 超级管理面板' : '🔐 管理面板';
+  /* 网站管理员：只显示生成永久密钥；其余全部隐藏 */
   $('superOnly').style.display = isSuper ? '' : 'none';
   $('genTypeRow').style.display = isSuper ? '' : 'none';
+  $('optVip').parentNode.style.display = isSuper ? '' : 'none';
+  var _fb = $('featBox'); if (_fb) _fb.style.display = 'none';
+  var _ab = $('adminBox'); if (_ab) _ab.style.display = 'none';
+  var _nt = $('noticeBox'); if (_nt) _nt.style.display = 'none';
   bindAdminUI();
   refreshKeys();
   if (isSuper) { loadFeatures(); loadAdmins(); loadSite(); }
