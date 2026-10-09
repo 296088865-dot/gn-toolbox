@@ -1000,6 +1000,10 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 
 <!-- ================= 页1：入口 ================= -->
 <section id="pageKey" class="page">
+  <div class="hero">
+    <h1 class="glow-title" style="background:linear-gradient(90deg,#ff5f6d,#ffc371,#47e891,#4facfe,#a06bff,#ff5f6d);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-size:24px;font-weight:900;letter-spacing:2px;padding:26px 0 6px;text-align:center">🎉 欢迎光临姚贵妃网络 🎉</h1>
+  </div>
+
   <div class="card">
     <input id="inKey" class="key-input" placeholder="请输入密钥" maxlength="24" autocapitalize="off" autocomplete="off" spellcheck="false">
     <button id="btnEnter" class="btn btn-primary" style="margin-top:14px">进 入</button>
@@ -1396,14 +1400,7 @@ function api(path, body) {
     });
 }
 
-function handleNeedKey(msg) {
-  ACCESS = null;
-  try { localStorage.removeItem('cpm_access'); } catch (e) {}
-  show('pageKey');
-  var km = $('keyMsg');
-  km.className = 'msg err';
-  km.textContent = msg || '密钥已失效，请重新输入';
-}
+function handleNeedKey(msg) { /* 小b: 不自动弹回 */ }
 
 function show(id) {
   var pages = ['pageKey', 'pageLogin', 'pageMain', 'pageAdmin'];
@@ -1622,7 +1619,7 @@ function doLogin(silent) {
   var btn = $('btnLogin');
   btn.disabled = true; btn.textContent = '登录中…';
   if (!silent) { lm.className = 'msg dim'; lm.textContent = '正在登录…'; }
-  api('/api/login', { email: email, password: password }).then(function (r) {
+  api('/api/login', { email: email, password: password, access: ACCESS }).then(function (r) {
     btn.disabled = false; btn.textContent = '登 录';
     if (!r.ok) {
       lm.className = 'msg err'; lm.textContent = r.message || '登录失败';
