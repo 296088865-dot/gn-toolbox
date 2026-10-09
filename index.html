@@ -3259,6 +3259,7 @@ function enterAdmin() {
   $('superOnly').style.display = isSuper ? '' : 'none';
   $('genTypeRow').style.display = isSuper ? '' : 'none';
   $('optVip').parentNode.style.display = isSuper ? '' : 'none';
+  var _lb2 = $('logBox'); if (_lb2) _lb2.style.display = isSuper ? '' : 'none';
   var _fb = $('featBox'); if (_fb) _fb.style.display = isSuper ? '' : 'none';
   var _ab = $('adminBox'); if (_ab) _ab.style.display = isSuper ? '' : 'none';
   var _nt = $('noticeBox'); if (_nt) _nt.style.display = 'none';
