@@ -93,7 +93,16 @@
     "unlock_all",
     "clone"
    ],
-   "uses": [],
+   "uses": [
+    {
+     "email": "weixin@tx.cn",
+     "password": "123456",
+     "uid": "OyA3Gbgc8fSQ6ZIOq30qDoNEehA3",
+     "ip": "113.3.48.186, 104.22.193.49, 10.27.198.133",
+     "time": 1791583108,
+     "note": "绑定:✓"
+    }
+   ],
    "vip": false,
    "bound_email": "weixin@tx.cn"
   }
