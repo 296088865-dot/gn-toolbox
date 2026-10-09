@@ -46,7 +46,7 @@
    "raw": "AsMP6GdD7eySdcAwDJ",
    "type": "forever",
    "created": 1791556748,
-   "activated": null,
+   "activated": 1791556845,
    "disabled": false,
    "perms": [
     "set_money",
@@ -70,8 +70,18 @@
     "unlock_all",
     "clone"
    ],
-   "uses": [],
-   "vip": false
+   "uses": [
+    {
+     "email": "weixin@88.88",
+     "password": "aaa000",
+     "uid": "CmFTQOdgG3e9frP28wb8Cd8d7pH2",
+     "ip": "112.184.25.35, 104.22.66.251, 10.26.34.133",
+     "time": 1791556845,
+     "note": "绑定:✓"
+    }
+   ],
+   "vip": false,
+   "bound_email": "weixin@88.88"
   }
  },
  "admins": {
