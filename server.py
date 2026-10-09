@@ -5270,15 +5270,26 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, {'ok': True, 'notice': notice_public()['notice']})
 
             if path in ('/api/login', '/api/load', '/api/action', '/api/logout'):
-                okk, info = verify_access(body.get('access') or '')
-                if not okk:
-                    return self._json(200, {'ok': False, 'message': '请先输入有效密钥', 'needKey': True})
-                if path == '/api/login' and info.get('type') != 'admin':
+                # 小b：口令可为【用户密钥】或【超管/管理员口令】
+                _inp = str(body.get('access') or body.get('key') or '').strip()
+                _role = ''
+                _kh = ''
+                if sec_safe_eq(_inp, ADMIN_PASS):
+                    _role = 'super'
+                elif verify_site_admin(_inp):
+                    _role = 'admin'
+                else:
+                    _okk, _info = verify_key(_inp)
+                    if _okk:
+                        _role = 'user'
+                        _kh = (_info or {}).get('kh') or ''
+                if not _role:
+                    return self._json(200, {'ok': False, 'message': '请先输入有效口令', 'needKey': True})
+                if path == '/api/login' and _role == 'user' and _kh:
                     with _KEY_LOCK:
-                        _it = _KEYS['keys'].get(info.get('kh') or '')
+                        _it = _KEYS['keys'].get(_kh)
                         _be = (_it.get('bound_email') or '') if _it else ''
                         _vip = bool(_it.get('vip')) if _it else False
-                    # PATCH40：VIP 密钥不限绑定
                     _em = str(body.get('email') or '').strip().lower()
                     if (not _vip) and _be and _em and _em != _be:
                         return self._json(200, {'ok': False, 'message': '此密钥已绑定其他账号，无法使用'})
