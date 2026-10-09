@@ -113,6 +113,15 @@
    "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
    "ip": "112.184.25.35, 104.22.66.251, 10.26.34.133",
    "time": 1791556651
+  },
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "weixin@qq.com",
+   "password": "aaa000",
+   "uid": "pW9zzd0gzaM6sJ7eWTj3Hzyz3Tk2",
+   "ip": "112.184.25.35, 172.70.147.182, 10.26.34.133",
+   "time": 1791556734
   }
  ]
 }
