@@ -1578,37 +1578,25 @@ function updateBadge(typeName, exp) {
 }
 
 function hasPerm(perm) {
-  if (IS_ADMIN || PERMS === 'ALL') return true;
-  return PERMS && PERMS.indexOf && PERMS.indexOf(perm) >= 0;
+  /* 小b：不做密钥级权限限制 —— 所有功能都可用。
+     功能是否显示由超管的「功能开关」决定（见 applyFeatures）。 */
+  return true;
 }
 
 function guardPerm(perm) {
-  /* PATCH43：访客模式 —— 只能查看，任何操作都提示加 QQ */
   if (IS_GUEST) {
     toast('如需购买请添加QQ');
-    log('👀 访客模式：只能查看，不能操作（如需购买请添加QQ）');
     return false;
   }
-  if (hasPerm(perm)) return true;
-  toast('此功能未包含在你的密钥中');
-  return false;
+  /* 小b：登录了就能用；是否显示由功能开关控制 */
+  return true;
 }
 
 function applyPerms() {
+  /* 小b：不标灰（权限由超管的功能开关控制显示与否） */
   var btns = document.querySelectorAll('[data-perm]');
   for (var i = 0; i < btns.length; i++) {
-    var b = btns[i];
-    var perm = b.getAttribute('data-perm');
-    var special = (b.id === 'btnWL');
-    var ok;
-    if (special) {
-      ok = hasPerm('set_wins') || hasPerm('set_loses');
-    } else {
-      ok = hasPerm(perm);
-    }
-    /* PATCH43：访客模式不标灰 —— 允许点，点了由 guardPerm 提示加 QQ */
-    if (IS_GUEST) { b.classList.remove('off'); continue; }
-    if (!ok) { b.classList.add('off'); } else { b.classList.remove('off'); }
+    btns[i].classList.remove('off');
   }
 }
 
