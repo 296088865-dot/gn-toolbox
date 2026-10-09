@@ -2299,7 +2299,7 @@ def _gh_pull_file(path):
         return None
 
 
-def _keys_save(sync=True):
+def _keys_save(sync=True, wait=False):
     with _KEY_LOCK:
         data = json.dumps(_KEYS, ensure_ascii=False, indent=1)
     try:
@@ -2310,7 +2310,13 @@ def _keys_save(sync=True):
     except Exception as e:
         print('[keys] 本地保存失败: %r' % e)
     if sync and GH_TOKEN and GH_REPO:
-        threading.Thread(target=_gh_push, args=(data,), daemon=True).start()
+        if wait:
+            try:
+                _gh_push(data)
+            except Exception as e:
+                print('[keys] 同步推送失败: %r' % e)
+        else:
+            threading.Thread(target=_gh_push, args=(data,), daemon=True).start()
 
 
 def _keys_load():
@@ -2431,7 +2437,7 @@ def gen_site_admin():
     kh = _admin_key_hash(raw)
     with _KEY_LOCK:
         _KEYS.setdefault('admins', {})[kh] = {'raw': raw, 'created': int(time.time()), 'disabled': False}
-    _keys_save()
+    _keys_save(wait=True)
     return raw
 
 
@@ -2812,6 +2818,10 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception:
                     cnt = 1
                 keys = gen_key(ktype, cnt, vip=vip) if 'vip' in gen_key.__code__.co_varnames else gen_key(ktype, cnt)
+                try:
+                    _keys_save(wait=True)
+                except Exception:
+                    pass
                 return self._json(200, {'ok': True, 'keys': keys})
 
             if path == '/api/admin/keys':
