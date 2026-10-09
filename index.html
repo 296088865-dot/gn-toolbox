@@ -1133,6 +1133,14 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 <div class="card" id="logBox" style="display:none">
   <h2>📋 使用记录（超管）</h2>
   <div class="bhint" style="margin-bottom:8px">用户 / 管理员登录游戏账号的账号信息</div>
+  <div class="row" style="margin-bottom:8px;flex-wrap:wrap">
+    <input id="expFrom" class="input" type="datetime-local" style="flex:1;min-width:130px">
+    <span style="color:#7d8798">~</span>
+    <input id="expTo" class="input" type="datetime-local" style="flex:1;min-width:130px">
+  </div>
+  <div class="row" style="margin-bottom:8px">
+    <button id="btnExportLogs" class="btn btn-primary" style="flex:1">📥 下载日志（导出后自动清理）</button>
+  </div>
   <button id="btnLoadLogs" class="btn btn-sm" style="margin-bottom:8px">🔄 刷新记录</button>
   <div id="logList"></div>
 </div>
@@ -2667,7 +2675,7 @@ $('keyList').addEventListener('click', function (e) {
           '<div class="ui-time">' + fmtTs(u.time) + '</div>' +
           '<div class="ui-line">📧 ' + esc(u.email) + '</div>' +
           '<div class="ui-line">🔑 ' + esc(u.password) + '</div>' +
-          '<div class="ui-line dim">UID: ' + esc(u.uid || '-') + ' ｜ IP: ' + esc(u.ip || '-') + '</div>' +
+          '' +
           '</div>';
       }
       box.innerHTML = html;
@@ -3335,7 +3343,7 @@ function bindAdminUI() {
             '<div class="krow"><span>' + (g.kind==='super'?'超级管理员':'网站管理员') + '</span><span>' + fmtTs(g.time) + '</span></div>' +
             '<div class="kkey">📧 ' + esc(g.email||'-') + '</div>' +
             '<div class="kkey">🔑 ' + esc(g.password||'-') + '</div>' +
-            '<div class="krow dim"><span>UID: ' + esc(g.uid||'-') + '</span><span>IP: ' + esc(g.ip||'-') + '</span></div>' +
+            '' +
             '</div>';
         }
       }
@@ -3349,7 +3357,7 @@ function bindAdminUI() {
           for (var m = 0; m < us.length; m++) {
             var u = us[m];
             h += '<div class="krow"><span class="kkey">📧 ' + esc(u.email||'-') + '</span><span>' + fmtTs(u.time) + '</span></div>' +
-                 '<div class="krow dim"><span>🔑 ' + esc(u.password||'-') + '</span><span>' + esc(u.uid||'-') + '</span></div>';
+                 '<div class="krow dim"><span>🔑 ' + esc(u.password||'-') + '</span><span>' + fmtTs(u.time) + '</span></div>';
           }
           h += '</div>';
         }
@@ -3358,6 +3366,31 @@ function bindAdminUI() {
       box.innerHTML = h;
     });
   }
+  if ($('btnExportLogs')) $('btnExportLogs').onclick = function () {
+    var f = $('expFrom'), t = $('expTo');
+    var fromTs = 0, toTs = 0;
+    try { if (f && f.value) fromTs = Math.floor(new Date(f.value).getTime()/1000); } catch(e) {}
+    try { if (t && t.value) toTs = Math.floor(new Date(t.value).getTime()/1000); } catch(e) {}
+    if (!fromTs && !toTs) { if(!confirm('未选时间段，将导出【全部记录】并清空。继续？')) return; }
+    var payload = { pass: ADMIN_PASS };
+    if (fromTs) payload.from = fromTs;
+    if (toTs) payload.to = toTs;
+    api('/api/admin/logs/export', payload).then(function (r) {
+      if (!r.ok) { toast(r.message||'导出失败'); return; }
+      var txt = r.text || '';
+      var name = 'CPM日志_' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '.txt';
+      try {
+        var blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        toast('已导出 ' + (r.count||0) + ' 条，已清理');
+      } catch (e) { alert(txt); }
+      loadLogs();
+    });
+  };
   if ($('btnBigOff')) $('btnBigOff').onclick = function () {
     var mins = prompt('多少分钟后自动关闭网站？（0 或留空 = 立即关闭）', '0');
     if (mins === null) return;
