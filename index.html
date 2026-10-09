@@ -767,20 +767,71 @@ html[dir="rtl"] .buy-float { left: auto; right: 12px; }
 /* ============================================================
    ★★★ 首页轮播公告条（PATCH45）★★★
    ============================================================ */
-
-
+.notice-bar {
+  position: relative;
+  display: none;              /* JS 按后端开关点亮 */
+  margin: 0 0 12px;
+  height: 34px;
+  border-radius: 14px;
+  overflow: hidden;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 1px 0 rgba(255,255,255,.34) inset, 0 -1px 0 rgba(255,255,255,.06) inset, 0 8px 22px rgba(0,0,0,.34);
+}
+.notice-bar.on { display: flex; }
 /* 背景模式：透明液态玻璃 / 半透明 / 无 */
-
-
-
+.notice-bar.bg-frosted {
+  background: linear-gradient(160deg,
+      rgba(255,255,255,calc(var(--nba, .22) * .55)) 0%,
+      rgba(255,255,255,calc(var(--nba, .22) * .18)) 40%,
+      rgba(255,255,255,calc(var(--nba, .22) * .06)) 100%);
+}
+.notice-bar.bg-translucent {
+  background: rgba(20,12,36,var(--nba, .22));
+}
+.notice-bar.bg-none {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
 /* 左侧小喇叭，不滚动 */
-
+.notice-horn {
+  flex: 0 0 auto;
+  padding: 0 9px 0 12px;
+  font-size: 14px;
+  line-height: 1;
+  opacity: .95;
+  filter: drop-shadow(0 0 6px rgba(255,212,121,.5));
+  z-index: 2;
+}
 /* 滚动可视区 */
-
-
-
-
-html[dir="rtl"] 
+.notice-view {
+  position: relative;
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: hidden;
+}
+.notice-track {
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+}
+.notice-item {
+  display: inline-block;
+  padding: 0 26px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+.notice-item.grad {
+  background-clip: text; -webkit-background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(186,132,255,.4));
+}
+html[dir="rtl"] .notice-bar { direction: rtl; }
 
 /* ============================================================
    ★★★ 车辆管理（PATCH46）★★★
@@ -849,25 +900,66 @@ html[dir="rtl"]
 .statchip b { display: block; font-size: 17px; color: #ffd48a; }
 .statchip span { font-size: 10.5px; color: #8d84a6; }
 
-
-
-
-
-
-
-
-
-
+.nt-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+.nt-row .input { flex: 1; }
+.nt-items { margin-top: 8px; }
+.nt-item-row { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
+.nt-item-row .input { flex: 1; }
+.nt-item-row button {
+  flex: 0 0 auto; padding: 8px 11px; border-radius: 10px; cursor: pointer;
+  border: 1px solid rgba(255,125,143,.45); background: rgba(255,125,143,.13);
+  color: #ff9fae; font-size: 12px; font-weight: 700;
+}
+.nt-pick { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.nt-pick input[type=color] {
+  width: 44px; height: 32px; padding: 0; border: none; border-radius: 8px;
+  background: transparent; cursor: pointer;
+}
+.nt-grade {
+  margin-top: 8px; padding: 10px 12px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.25);
+  font-weight: 800; letter-spacing: .5px;
+  overflow: hidden; white-space: nowrap;
+}
 /* 预览：固定磨砂玻璃框 + 只有文字滚动（PATCH46） */
-
-
-
-
-
+.nt-pvbar {
+  margin-top: 8px; height: 34px; border-radius: 14px; overflow: hidden;
+  display: flex; align-items: center;
+  border: 1px solid rgba(255,255,255,.22);
+  background: linear-gradient(160deg,
+      rgba(255,255,255,.13) 0%,
+      rgba(255,255,255,.05) 40%,
+      rgba(255,255,255,.02) 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.34) inset, 0 -1px 0 rgba(255,255,255,.06) inset, 0 8px 22px rgba(0,0,0,.34);
+}
+.nt-pvbar .nt-horn {
+  flex: 0 0 auto; padding: 0 9px 0 12px; font-size: 14px; line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255,212,121,.5)); z-index: 2;
+}
+.nt-pvbar .nt-view { position: relative; flex: 1 1 auto; height: 100%; overflow: hidden; }
+.nt-pvbar .nt-track {
+  position: absolute; left: 0; top: 0; height: 100%;
+  display: inline-flex; align-items: center; white-space: nowrap; will-change: transform;
+}
+.nt-pvbar .nt-item { display: inline-block; padding: 0 26px; font-weight: 800; letter-spacing: .5px; white-space: nowrap; }
 /* 渐变只作用在文字上（而非背景块） */
-
-
-
+.nt-item.grad, .nt-pvbar .nt-item.grad {
+  background-clip: text; -webkit-background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(186,132,255,.4));
+}
+.nt-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.nt-chips .chip2 {
+  padding: 5px 11px; border-radius: 999px; cursor: pointer; font-size: 11.5px;
+  border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.05);
+  color: #cdb6ff;
+}
+.nt-chips .chip2.on {
+  border-color: rgba(180,140,255,.85);
+  background: linear-gradient(180deg, rgba(180,140,255,.30), rgba(150,90,255,.16));
+  color: #fff;
+}
 
 /* ============================================================
    ★★★ 首页主标题：静态彩虹渐变（无任何动画）★★★
@@ -1646,7 +1738,7 @@ $('btnWL').onclick = function () {
   }
 })();
 
-if ($('btnRank')) $('btnRank').onclick = function () { if (!guardPerm('set_rank')) return; doAction('set_rank', {}, '皇冠等级'); };
+if ($('btnRank')) if ($('btnRank')) $('btnRank').onclick = function () { if (!guardPerm('set_rank')) return; doAction('set_rank', {}, '皇冠等级'); };
 $('btnFix').onclick = function () { if (!guardPerm('fix_account')) return; doAction('fix_account', {}, '修复账号数据'); };
 if($('btnUnlockAll')) $('btnUnlockAll').onclick = function () {
   if (!guardPerm('unlock_all')) return;
@@ -2278,7 +2370,7 @@ if ($('btnCarLoad')) $('btnCarLoad').onclick = function () {
 /* ============ 管理员：轮播公告设置（PATCH45） ============ */
 var NT_CFG = { colorMode: 'gradient', bgMode: 'frosted', items: [] };
 
-function ntBuildItems(){ /* removed */ if(0){
+function ntBuildItems(items) {
   var box = $('ntItems');
   if (!box) return;
   box.innerHTML = '';
@@ -2306,7 +2398,7 @@ function ntBuildItems(){ /* removed */ if(0){
   }
 }
 
-function ntCollect(){ /* removed */ if(0){
+function ntCollect() {
   var out = [];
   var inps = document.querySelectorAll('#ntItems input[data-nt]');
   for (var i = 0; i < inps.length; i++) {
@@ -2316,19 +2408,38 @@ function ntCollect(){ /* removed */ if(0){
   return out;
 }
 
-function ntPickMode(){ /* removed */ if(0){
+function ntPickMode(boxId, attr, key) {
   var box = $(boxId);
   if (!box) return;
   box.addEventListener('click', function (e) {
     var t = e.target;
     if (!t.getAttribute || !t.getAttribute(attr)) return;
-    var chips = box.querySelectorAll(' else {
+    var chips = box.querySelectorAll('.chip2');
+    for (var i = 0; i < chips.length; i++) chips[i].className = 'chip2';
+    t.className = 'chip2 on';
+    NT_CFG[key] = t.getAttribute(attr);
+    ntPreviewRefresh();
+  });
+}
+
+var NT_PV_TIMER = null;
+
+function ntMakeItemHTML(text, cfg) {
+  var fs = cfg.fontSize || 14;
+  var bold = cfg.bold !== false ? '900' : '600';
+  var isGrad = (cfg.colorMode !== 'solid');
+  var st = 'font-size:' + fs + 'px;font-weight:' + bold + ';';
+  if (isGrad) {
+    /* 渐变用 background-image（不能用 background 简写，否则会重置 background-clip） */
+    st += 'background-image:linear-gradient(90deg,' + (cfg.gradColor1 || '#a97bff') + ',' + (cfg.gradColor2 || '#ffd479') + ');';
+    st += 'background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;';
+  } else {
     st += 'color:' + (cfg.color || '#a97bff') + ';-webkit-text-fill-color:' + (cfg.color || '#a97bff') + ';';
   }
   return '<span class="nt-item' + (isGrad ? ' grad' : '') + '" style="' + st + '">' + esc(text) + '</span>';
 }
 
-function ntPreviewRefresh(){ /* removed */ if(0){
+function ntPreviewRefresh() {
   var track = $('ntPreviewTrack');
   var bar = $('ntPreviewBar');
   if (!track || !bar) return;
@@ -2352,14 +2463,22 @@ function ntPreviewRefresh(){ /* removed */ if(0){
   var speed = Math.max(10, Math.min(300, parseInt(($('ntSpeed') ? $('ntSpeed').value : '60') || '60', 10)));
   var x = 0, halfW = 0;
   function measure() {
-    var its = track.querySelectorAll('
+    var its = track.querySelectorAll('.nt-item');
+    var half = its.length / 2, w = 0;
+    for (var k = 0; k < half; k++) w += its[k].offsetWidth;
+    halfW = w;
+  }
+  setTimeout(measure, 50);
+  setTimeout(measure, 500);
+  NT_PV_TIMER = setInterval(function () {
+    if (!halfW) { measure(); return; }
     x -= speed / 20;
     if (-x >= halfW) x += halfW;
     track.style.transform = 'translateX(' + x + 'px)';
   }, 50);
 }
 
-function ntLoadAdmin(){ /* removed */ if(0){
+function ntLoadAdmin() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/api/notice?_=' + Date.now(), true);
   xhr.onreadystatechange = function () {
@@ -2378,7 +2497,13 @@ function ntLoadAdmin(){ /* removed */ if(0){
       NT_CFG.colorMode = n.colorMode || 'gradient';
       NT_CFG.bgMode = n.bgMode || 'frosted';
       /* chips 高亮 */
-      var cm = $('ntColorMode').querySelectorAll('
+      var cm = $('ntColorMode').querySelectorAll('.chip2');
+      for (var i = 0; i < cm.length; i++) cm[i].className = 'chip2' + (cm[i].getAttribute('data-mode') === NT_CFG.colorMode ? ' on' : '');
+      var bm = $('ntBgMode').querySelectorAll('.chip2');
+      for (var j = 0; j < bm.length; j++) bm[j].className = 'chip2' + (bm[j].getAttribute('data-mode') === NT_CFG.bgMode ? ' on' : '');
+      ntBuildItems(n.items || []);
+      ntPreviewRefresh();
+    } catch (e) {}
   };
   try { xhr.send(); } catch (e) {}
 }
@@ -2837,7 +2962,7 @@ if ($('langModal')) $('langModal').onclick = function (e) { if (e.target === $('
 var NT_TIMER = null;
 var NT_DATA = null;
 
-function ntApply(){ /* removed */ if(0){
+function ntApply(cfg) {
   var bar = $('noticeBar');
   var track = $('noticeTrack');
   if (!bar || !track) return;
@@ -2878,14 +3003,23 @@ function ntApply(){ /* removed */ if(0){
   var x = 0;
   var halfW = 0;
   function measure() {
-    var items = track.querySelectorAll('
+    var items = track.querySelectorAll('.notice-item');
+    var half = items.length / 2;
+    var w = 0;
+    for (var k = 0; k < half; k++) w += items[k].offsetWidth;
+    halfW = w;
+  }
+  setTimeout(measure, 60);
+  setTimeout(measure, 600);
+  NT_TIMER = setInterval(function () {
+    if (!halfW) { measure(); return; }
     x -= speed / 20;             /* 每 50ms 走 speed/20 px */
     if (-x >= halfW) x += halfW;
     track.style.transform = 'translateX(' + x + 'px)';
   }, 50);
 }
 
-function ntLoad(){ /* removed */ if(0){
+function ntLoad() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/api/notice?_=' + Date.now(), true);
   xhr.onreadystatechange = function () {
