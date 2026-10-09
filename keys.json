@@ -230,6 +230,15 @@
    "uid": "OyA3Gbgc8fSQ6ZIOq30qDoNEehA3",
    "ip": "113.3.48.186, 172.71.124.88, 10.27.198.133",
    "time": 1791583487
+  },
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "967@qq.com",
+   "password": "123456",
+   "uid": "L5dRp5zxbCX8GjJEcIqUhgzzPeP2",
+   "ip": "113.3.48.186, 104.22.49.103, 10.26.87.133",
+   "time": 1791584414
   }
  ]
 }
