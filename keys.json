@@ -167,37 +167,6 @@
    ],
    "uses": [],
    "vip": false
-  },
-  "f6e2646b09dc04ad": {
-   "raw": "YUCEyxnFEjEmDU82Za",
-   "type": "forever",
-   "created": 1791619466,
-   "activated": null,
-   "disabled": false,
-   "perms": [
-    "set_money",
-    "set_coin",
-    "set_id",
-    "set_name",
-    "set_wins",
-    "set_loses",
-    "unlock_w16",
-    "unlock_horns",
-    "unlock_fuel",
-    "unlock_damage",
-    "unlock_smoke",
-    "unlock_cars",
-    "unlock_wheels",
-    "unlock_anims",
-    "unlock_houses",
-    "complete_levels",
-    "set_rank",
-    "fix_account",
-    "unlock_all",
-    "clone"
-   ],
-   "uses": [],
-   "vip": false
   }
  },
  "admins": {
@@ -351,6 +320,15 @@
    "uid": "sVOXfrOhLER1ef1Hv0IQQvSTIsz1",
    "ip": "113.3.48.186, 172.64.217.138, 10.27.198.133",
    "time": 1791619458
+  },
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "wyz@88.cn",
+   "password": "123456",
+   "uid": "sVOXfrOhLER1ef1Hv0IQQvSTIsz1",
+   "ip": "113.3.48.186, 172.64.217.138, 10.27.198.133",
+   "time": 1791619534
   }
  ]
 }
