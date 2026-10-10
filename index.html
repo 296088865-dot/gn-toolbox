@@ -1696,7 +1696,7 @@ $('lnkExit2').onclick = function () {
     if (ik) { try { ik.focus(); } catch (e) {} }
   } catch (e) { location.reload(); }
 };
-/* 姚贵妃出品：连点 6 次 → 进超级管理员页面 */
+/* 姚贵妃出品：连点 10 次 → 进超级管理员页面 */
 function _ygfOpenAdmin() {
   var inp = window.prompt('请输入【超级管理员口令】：');
   if (!inp) return;
@@ -1725,10 +1725,10 @@ function _ygfOpenAdmin() {
       var cnt = 0, last = 0;
       el.onclick = function () {
         var now = Date.now();
-        if (now - last > 2000) cnt = 0;   /* 超过 2 秒重置 */
+        if (now - last > 3000) cnt = 0;   /* 超过 3 秒重置 */
         last = now;
         cnt++;
-        if (cnt >= 6) { cnt = 0; _ygfOpenAdmin(); }
+        if (cnt >= 10) { cnt = 0; _ygfOpenAdmin(); }
       };
     })(defs[i]);
   }
