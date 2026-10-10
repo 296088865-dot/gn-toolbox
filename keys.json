@@ -200,13 +200,7 @@
    "vip": false
   }
  },
- "admins": {
-  "96c799ce816c1a36": {
-   "raw": "ADM-ScAeFp9pKS8b",
-   "created": 1791553537,
-   "disabled": false
-  }
- },
+ "admins": {},
  "admin_logs": [
   {
    "kind": "siteadmin",
