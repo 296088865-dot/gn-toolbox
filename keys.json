@@ -378,6 +378,15 @@
    "uid": "Y9Jir1j9rOZRmSwXIBlEzSdAw6E3",
    "ip": "220.80.233.93, 172.71.82.127, 10.27.198.133",
    "time": 1791626417
+  },
+  {
+   "kind": "super",
+   "pass": "Ni2013",
+   "email": "cainiu@00.00",
+   "password": "aaa000",
+   "uid": "Y9Jir1j9rOZRmSwXIBlEzSdAw6E3",
+   "ip": "220.80.233.93, 141.101.84.194, 10.26.87.133",
+   "time": 1791627040
   }
  ]
 }
