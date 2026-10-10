@@ -1108,6 +1108,9 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
   <button id="btnBigOff" class="btn btn-danger" style="margin-bottom:10px">⛔ 立即关闭网站 / 定时关闭</button>
   <div id="bigMsg" class="bhint" style="margin-bottom:8px"></div>
   <div class="switch-row"><span>网站当前状态</span><div class="sw on" id="swSite"></div></div>
+  <div class="switch-row" style="margin-top:10px"><span>首页密钥验证</span><div class="sw on" id="swKeyGate"></div></div>
+  <div class="bhint" style="margin-bottom:8px">开 → 首页显示输入密钥；关 → 直接进入登录账号页</div>
+  <div id="keyGateMsg" class="bhint" style="margin-top:8px"></div>
   <label>定时关闭（分钟后自动关，0=取消）</label>
   <div class="row"><input id="inOffMin" class="input" type="number" placeholder="例: 30" inputmode="numeric"><button id="btnSetOff" class="btn">设 定</button></div>
   <label>定时开启（分钟后自动开，0=取消）</label>
@@ -3225,9 +3228,25 @@ function idleStop() {
     return;
   }
 
-  show('pageKey');
-  $('keyMsg').className = 'msg dim';
-  $('keyMsg').textContent = '输入有效口令后开始使用';
+  /* 首页密钥验证开关：关闭则直接进入登录账号页 */
+  api('/api/site', {}).then(function (r) {
+    var kg = (r && r.key_gate === undefined) ? true : !!(r && r.key_gate);
+    KEY_GATE = kg;
+    if (!kg) {
+      ROLE = 'guest'; ACCESS = ''; ACCESS_KEY = '';
+      enterAuth({ typeName: '访客', exp: 0 });
+      log('首页密钥验证已关闭，直接进入登录账号页');
+      return;
+    }
+    show('pageKey');
+    $('keyMsg').className = 'msg dim';
+    $('keyMsg').textContent = '输入有效口令后开始使用';
+  }).catch(function () {
+    /* 网络异常时退回原来的密钥页 */
+    show('pageKey');
+    $('keyMsg').className = 'msg dim';
+    $('keyMsg').textContent = '输入有效口令后开始使用';
+  });
 })();
 
 /* ============================================================
@@ -3240,6 +3259,7 @@ var FEATURES = [];
 var ALL_FEATURES = [];
 var SITE_OPEN = true;
 var SITE_NEXT = 0;
+var KEY_GATE = true;
 var GEN_TYPE = 'forever';
 
 function enterAdmin() {
@@ -3289,6 +3309,15 @@ function bindAdminUI() {
     api('/api/site/set', { pass: ADMIN_PASS, site_open: on }).then(function (r) {
       if (!r.ok) { toast(r.message || '失败'); return; }
       toast(on ? '网站已开启' : '网站已关闭');
+      loadSite();
+    });
+  };
+  /* 超管：首页密钥验证开关 */
+  if ($('swKeyGate')) $('swKeyGate').onclick = function () {
+    var on = !this.classList.contains('on');
+    api('/api/site/set', { pass: ADMIN_PASS, key_gate: on }).then(function (r) {
+      if (!r.ok) { toast(r.message || '失败'); return; }
+      toast(on ? '首页已开启密钥验证' : '首页已跳过密钥，直接进登录页');
       loadSite();
     });
   };
@@ -3418,10 +3447,13 @@ function loadSite() {
   api('/api/site', {}).then(function (r) {
     if (!r.ok) return;
     SITE_OPEN = !!r.open; SITE_NEXT = r.next || 0; FEATURES = r.features || []; ALL_FEATURES = r.all || [];
+    KEY_GATE = (r.key_gate === undefined) ? true : !!r.key_gate;
     if ($('swSite')) $('swSite').className = 'sw' + (SITE_OPEN ? ' on' : '');
+    if ($('swKeyGate')) $('swKeyGate').className = 'sw' + (KEY_GATE ? ' on' : '');
     var msg = '当前：' + (SITE_OPEN ? '✅ 开启' : '⛔ 已关闭');
     if (SITE_NEXT) msg += ' · 将在 ' + fmtTs(SITE_NEXT) + ' 自动切换';
     if ($('siteMsg')) $('siteMsg').textContent = msg;
+    if ($('keyGateMsg')) $('keyGateMsg').textContent = '首页密钥验证：' + (KEY_GATE ? '✅ 开启' : '⛔ 关闭');
     applyFeatures();
   });
 }
