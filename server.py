@@ -1900,7 +1900,12 @@ def check_session_access(sid, access):
             owner_type = ent.get('type') or ''
             cli = ent.get('client')
         okk, info = verify_access(access or '')
+        # 首页密钥验证关闭：无口令的访客会话也放行
         if not okk:
+            with _CFG_LOCK:
+                _kg = bool(_CFG.get('key_gate', True))
+            if not _kg and not str(access or '').strip():
+                return True, '', cli
             return False, '请先输入有效密钥', None
         if info.get('type') == 'admin' or owner_type == 'admin':
             return True, '', cli
@@ -2362,7 +2367,7 @@ _FEATURE_IDS = [f[0] for f in ALL_FEATURES]
 CFG_FILE = os.path.join(HERE, 'config.json')
 GH_CFG_PATH = os.environ.get('GH_CFG_PATH') or 'config.json'
 _CFG_LOCK = threading.Lock()
-_CFG = {'features': list(_FEATURE_IDS), 'site_open': True, 'auto_off_at': 0, 'auto_on_at': 0}
+_CFG = {'features': list(_FEATURE_IDS), 'site_open': True, 'auto_off_at': 0, 'auto_on_at': 0, 'key_gate': True}
 
 
 def _cfg_save(sync=True):
@@ -2397,7 +2402,10 @@ def _cfg_load():
     if not isinstance(_CFG.get('features'), list):
         _CFG['features'] = list(_FEATURE_IDS)
     _CFG['features'] = [f for f in _CFG['features'] if f in _FEATURE_IDS]
-    print('[cfg] 功能 %d 个，站点%s' % (len(_CFG['features']), '开启' if _CFG.get('site_open') else '关闭'))
+    _CFG['key_gate'] = bool(_CFG.get('key_gate', True))
+    print('[cfg] 功能 %d 个，站点%s，首页密钥验证%s' % (
+        len(_CFG['features']), '开启' if _CFG.get('site_open') else '关闭',
+        '开' if _CFG.get('key_gate') else '关'))
 
 
 def site_status():
@@ -2958,8 +2966,9 @@ class Handler(BaseHTTPRequestHandler):
                 is_open, nxt = site_status()
                 with _CFG_LOCK:
                     feats = list(_CFG.get('features') or [])
+                    key_gate = bool(_CFG.get('key_gate', True))
                 return self._json(200, {'ok': True, 'open': is_open, 'next': nxt, 'features': feats,
-                                        'all': ALL_FEATURES, 'now': int(time.time())})
+                                        'all': ALL_FEATURES, 'key_gate': key_gate, 'now': int(time.time())})
 
             # ===== 小b：站点开关（仅超管） =====
             if path == '/api/site/set':
@@ -2968,6 +2977,8 @@ class Handler(BaseHTTPRequestHandler):
                 with _CFG_LOCK:
                     if 'site_open' in body:
                         _CFG['site_open'] = bool(body.get('site_open'))
+                    if 'key_gate' in body:
+                        _CFG['key_gate'] = bool(body.get('key_gate'))
                     if 'auto_off_sec' in body:
                         try:
                             sec = int(body.get('auto_off_sec') or 0)
@@ -2982,7 +2993,9 @@ class Handler(BaseHTTPRequestHandler):
                         _CFG['auto_on_at'] = (int(time.time()) + sec) if sec > 0 else 0
                 _cfg_save()
                 is_open, nxt = site_status()
-                return self._json(200, {'ok': True, 'open': is_open, 'next': nxt})
+                with _CFG_LOCK:
+                    key_gate = bool(_CFG.get('key_gate', True))
+                return self._json(200, {'ok': True, 'open': is_open, 'next': nxt, 'key_gate': key_gate})
 
             # ===== 小b：功能开关（仅超管） =====
             if path == '/api/features':
@@ -5451,7 +5464,13 @@ class Handler(BaseHTTPRequestHandler):
                         _role = 'user'
                         _kh = (_info or {}).get('kh') or ''
                 if not _role:
-                    return self._json(200, {'ok': False, 'message': '请先输入有效口令', 'needKey': True})
+                    # 首页密钥验证关闭时：无需口令即可进入（超管口令仍优先识别）
+                    with _CFG_LOCK:
+                        _kg = bool(_CFG.get('key_gate', True))
+                    if not _kg:
+                        _role = 'guest'
+                    else:
+                        return self._json(200, {'ok': False, 'message': '请先输入有效口令', 'needKey': True})
                 if path == '/api/login' and _role == 'user' and _kh:
                     with _KEY_LOCK:
                         _it = _KEYS['keys'].get(_kh)
