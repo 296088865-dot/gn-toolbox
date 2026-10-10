@@ -1001,7 +1001,7 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
 </div>
 
 <!-- ================= 页1：入口 ================= -->
-<section id="pageKey" class="page">
+<section id="pageKey" class="page" style="display:none">
   <div class="hero">
     <h1 class="glow-title" style="background:linear-gradient(90deg,#ff5f6d,#ffc371,#47e891,#4facfe,#a06bff,#ff5f6d);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-size:24px;font-weight:900;letter-spacing:2px;padding:26px 0 6px;text-align:center">🎉 欢迎光临姚贵妃网络 🎉</h1>
   </div>
@@ -3247,6 +3247,20 @@ function idleStop() {
 /* ============ 启动 ============ */
 (function boot() {
   log('姚贵妃网络已加载');
+  /* 先给个过渡，避免请求期间白屏 */
+  try {
+    var _lg = document.getElementById('bootLoading');
+    if (!_lg) {
+      _lg = document.createElement('div');
+      _lg.id = 'bootLoading';
+      _lg.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#5a6478;font-size:13px;letter-spacing:2px;z-index:5';
+      _lg.textContent = '加载中…';
+      document.body.appendChild(_lg);
+    }
+  } catch (e) {}
+  window._bootDone = function () {
+    try { var _l = document.getElementById('bootLoading'); if (_l) _l.parentNode.removeChild(_l); } catch (e) {}
+  };
 
   /* 恢复超管/管理员会话 */
   var ar = null, ap = null;
@@ -3254,6 +3268,7 @@ function idleStop() {
   if (ar && ap) {
     ROLE = ar; ADMIN_PASS = ap; ACCESS = ap;
     enterAuth({ typeName: (ar === 'super' ? '超级管理员' : '网站管理员'), exp: 0, admin: true });
+    if (window._bootDone) window._bootDone();
     log('已恢复' + (ar === 'super' ? '超级管理员' : '网站管理员') + '会话，请登录游戏账号');
     return;
   }
@@ -3264,6 +3279,7 @@ function idleStop() {
   if (ak) {
     ROLE = 'user'; ACCESS = ak; ACCESS_KEY = ak;
     enterAuth({ typeName: '用户', exp: 0 });
+    if (window._bootDone) window._bootDone();
     return;
   }
 
@@ -3274,15 +3290,18 @@ function idleStop() {
     if (!kg) {
       ROLE = 'guest'; ACCESS = ''; ACCESS_KEY = '';
       enterAuth({ typeName: '访客', exp: 0 });
+      if (window._bootDone) window._bootDone();
       log('首页密钥验证已关闭，直接进入登录账号页');
       return;
     }
     show('pageKey');
+    if (window._bootDone) window._bootDone();
     $('keyMsg').className = 'msg dim';
     $('keyMsg').textContent = '输入有效口令后开始使用';
   }).catch(function () {
     /* 网络异常时退回原来的密钥页 */
     show('pageKey');
+    if (window._bootDone) window._bootDone();
     $('keyMsg').className = 'msg dim';
     $('keyMsg').textContent = '输入有效口令后开始使用';
   });
