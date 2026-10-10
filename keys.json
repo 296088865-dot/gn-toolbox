@@ -284,6 +284,15 @@
    "uid": "L5dRp5zxbCX8GjJEcIqUhgzzPeP2",
    "ip": "113.3.48.186, 104.22.176.9, 10.31.197.151",
    "time": 1791584751
+  },
+  {
+   "kind": "super",
+   "pass": "Ni2013",
+   "email": "weixin@88.88",
+   "password": "aaa000",
+   "uid": "CmFTQOdgG3e9frP28wb8Cd8d7pH2",
+   "ip": "222.122.103.62, 104.22.66.251, 10.26.87.133",
+   "time": 1791592071
   }
  ]
 }
