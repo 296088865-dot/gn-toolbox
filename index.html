@@ -1047,7 +1047,7 @@ html[dir="rtl"] .notice-bar { direction: rtl; }
     <div class="msg dim" id="loginMsg">密码只发往本服务器，页面不保存任何数据</div>
   </div>
 
-  <div class="foot"><a id="lnkExit2" href="javascript:;">退出</a></div>
+  <div class="foot"><a id="lnkExit2" href="javascript:;">退出</a>　·　<a id="lnkAdminEntry" href="javascript:;" style="opacity:.55;font-size:12px">管理入口</a></div>
 </section>
 
 <!-- ================= 页3：主功能 ================= -->
@@ -1695,6 +1695,26 @@ $('lnkExit2').onclick = function () {
     var ik = $('inKey');
     if (ik) { try { ik.focus(); } catch (e) {} }
   } catch (e) { location.reload(); }
+};
+/* 管理入口：首页密钥验证关闭时，超管从这里进管理面板 */
+if ($('lnkAdminEntry')) $('lnkAdminEntry').onclick = function () {
+  var inp = window.prompt('请输入【超级管理员口令】：');
+  if (!inp) return;
+  var p = inp.trim();
+  api('/api/entry', { input: p }).then(function (r) {
+    if (!r.ok || (r.role !== 'super' && r.role !== 'admin')) {
+      toast(r.message || '口令无效');
+      return;
+    }
+    ROLE = r.role;
+    ADMIN_PASS = p;
+    ACCESS = p;
+    ACCESS_KEY = p;
+    try { sessionStorage.setItem('b_admin_pass', p); sessionStorage.setItem('b_role', ROLE); } catch (e) {}
+    try { localStorage.removeItem('b_key'); } catch (e) {}
+    enterAdmin();
+    toast(ROLE === 'super' ? '超级管理面板已打开' : '管理面板已打开');
+  });
 };
 $('btnRefresh').onclick = function () {
   log('… 刷新数据');
