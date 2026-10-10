@@ -15,7 +15,7 @@
   "unlock_houses",
   "complete_levels"
  ],
- "site_open": true,
+ "site_open": false,
  "auto_off_at": 0,
  "auto_on_at": 0,
  "key_gate": false
