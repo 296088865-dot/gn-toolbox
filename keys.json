@@ -311,6 +311,15 @@
    "uid": "gjs7lz4G5tN7wg6JSAbpCRQugjn2",
    "ip": "113.3.48.186, 104.22.193.49, 10.31.197.151",
    "time": 1791618166
+  },
+  {
+   "kind": "siteadmin",
+   "pass": "ADM-ScAeFp9pKS8b",
+   "email": "wyz@88.cn",
+   "password": "123456",
+   "uid": "sVOXfrOhLER1ef1Hv0IQQvSTIsz1",
+   "ip": "113.3.48.186, 172.64.217.138, 10.27.198.133",
+   "time": 1791619458
   }
  ]
 }
